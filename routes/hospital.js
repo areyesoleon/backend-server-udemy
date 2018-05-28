@@ -41,22 +41,20 @@ app.put('/:id', mdAutenticacion.vericaToken, (req, res) => {
         }
       });
     }
-    usuario.nombre = body.nombre;
-    usuario.email = body.email;
-    usuario.role = body.role;
+    hospital.nombre = body.nombre;
+    hospital.usuario = req.usuario._id;
 
-    usuario.save((err, usuarioGuardado) => {
+    hospital.save((err, hospitalGuardado) => {
       if (err) {
         return res.status(400).json({
           ok: false,
-          mensaje: 'Error al actualizar usuario',
+          mensaje: 'Error al actualizar hospital',
           errors: err
         });
       }
-      usuarioGuardado.password = ':)';
       res.status(200).json({
         ok: true,
-        usuario: usuarioGuardado
+        hospital: hospitalGuardado
       });
     });
   });
@@ -64,26 +62,22 @@ app.put('/:id', mdAutenticacion.vericaToken, (req, res) => {
 
 app.post('/', mdAutenticacion.vericaToken, (req, res) => {
   const body = req.body;
-  const usuario = new Hospital({
+  const hospital = new Hospital({
     nombre: body.nombre,
-    email: body.email,
-    password: bcrypt.hashSync(body.password, 10),
-    img: body.img,
-    role: body.role
+    usuario:req.usuario._id
   });
 
-  usuario.save((err, usuarioGuardado) => {
+  hospital.save((err, hospitalGuardado) => {
     if (err) {
       return res.status(400).json({
         ok: false,
-        mensaje: 'Error al crear usuarios',
+        mensaje: 'Error al crear hospital',
         errors: err
       });
     }
     res.status(201).json({
       ok: true,
-      usuario: usuarioGuardado,
-      usuariotoken: req.usuario,
+      hospital: hospitalGuardado
     });
   });
 
@@ -91,24 +85,24 @@ app.post('/', mdAutenticacion.vericaToken, (req, res) => {
 
 app.delete('/:id', mdAutenticacion.vericaToken, (req, res) => {
   const id = req.params.id;
-  Hospital.findByIdAndRemove(id, (err, usuarioBorrado) => {
+  Hospital.findByIdAndRemove(id, (err, hospitalBorrado) => {
     if (err) {
       return res.status(500).json({
         ok: false,
-        mensaje: 'Error al borrar usuario',
+        mensaje: 'Error al borrar hospital',
         errors: err
       });
     }
-    if (!usuarioBorrado) {
+    if (!hospitalBorrado) {
       return res.status(400).json({
         ok: false,
-        mensaje: 'No existe usuario con ese ID',
+        mensaje: 'No existe hospital con ese ID',
         errors: { message: 'Hospital no existe' }
       });
     }
     res.status(200).json({
       ok: true,
-      usuarios: usuarioBorrado
+      hospitals: hospitalBorrado
     });
   });
 });
