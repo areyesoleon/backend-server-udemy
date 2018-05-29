@@ -4,7 +4,11 @@ const Hospital = require('../models/hospital');
 const mdAutenticacion = require('../middlewares/autenticacion');
 
 app.get('/', (req, res, next) => {
+  const desde = Number(req.query.desde) || 0;
   Hospital.find({})
+    .skip(desde)
+    .limit(5)
+    .populate('usuario', 'nombre email')
     .exec(
       (err, hospitales) => {
         if (err) {
@@ -14,9 +18,12 @@ app.get('/', (req, res, next) => {
             errors: err
           });
         }
-        res.status(200).json({
-          ok: true,
-          hospitales: hospitales
+        Hospital.count({},(err,conteo) => {
+          res.status(200).json({
+            ok: true,
+            hospitales: hospitales,
+            total: conteo
+          });
         });
       });
 });
@@ -64,7 +71,7 @@ app.post('/', mdAutenticacion.vericaToken, (req, res) => {
   const body = req.body;
   const hospital = new Hospital({
     nombre: body.nombre,
-    usuario:req.usuario._id
+    usuario: req.usuario._id
   });
 
   hospital.save((err, hospitalGuardado) => {
