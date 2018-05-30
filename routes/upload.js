@@ -46,7 +46,7 @@ app.put('/:tipo/:id', (req, res, next) => {
     });
   }
   //Nombre del archivo
-  const nombreArchivo = `${ id }-${ new Date().getMilliseconds() }.${extensionArchivo}`;
+  const nombreArchivo = `${id}-${new Date().getMilliseconds()}.${extensionArchivo}`;
 
   //Mover el archivo del temporal a un path
   const path = `./uploads/${tipo}/${nombreArchivo}`;
@@ -65,6 +65,13 @@ app.put('/:tipo/:id', (req, res, next) => {
 function subirPorTipo(tipo, id, nombreArchivo, res) {
   if (tipo === 'usuarios') {
     Usuario.findById(id, (err, usuario) => {
+      if (!usuario) {
+        return res.status(400).json({
+          ok: false,
+          mensaje: 'Usuario no existe',
+          erorrs: { message: 'Usuario no existe' }
+        });
+      }
       const pathViejo = './uploads/usuarios/' + usuario.img;
       if (fs.existsSync(pathViejo)) {
         fs.unlink(pathViejo);
@@ -82,6 +89,13 @@ function subirPorTipo(tipo, id, nombreArchivo, res) {
   }
   if (tipo === 'medicos') {
     Medico.findById(id, (err, medico) => {
+      if (!medico) {
+        return res.status(400).json({
+          ok: false,
+          mensaje: 'Medico no existe',
+          erorrs: { message: 'Medico no existe' }
+        });
+      }
       const pathViejo = './uploads/medicos/' + medico.img;
       if (fs.existsSync(pathViejo)) {
         fs.unlink(pathViejo);
@@ -98,6 +112,13 @@ function subirPorTipo(tipo, id, nombreArchivo, res) {
   }
   if (tipo === 'hospitales') {
     Hospital.findById(id, (err, hospital) => {
+      if (!hospital) {
+        return res.status(400).json({
+          ok: false,
+          mensaje: 'Hospital no existe',
+          erorrs: { message: 'Hospital no existe' }
+        });
+      }
       const pathViejo = './uploads/hospitales/' + hospital.img;
       if (fs.existsSync(pathViejo)) {
         fs.unlink(pathViejo);
@@ -113,5 +134,4 @@ function subirPorTipo(tipo, id, nombreArchivo, res) {
     });
   }
 }
-
 module.exports = app;
