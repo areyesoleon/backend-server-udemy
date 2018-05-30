@@ -78,6 +78,7 @@ app.post('/', mdAutenticacion.vericaToken , (req, res) => {
     img: body.img,
     role: body.role
   });
+  console.log(usuario);
 
   usuario.save((err, usuarioGuardado) => {
     if (err) {
