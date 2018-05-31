@@ -28,7 +28,7 @@ app.get('/', (req, res, next) => {
       });
 });
 
-app.put('/:id', (req, res) => {
+app.put('/:id', mdAutenticacion.vericaToken,(req, res) => {
   const id = req.params.id;
   const body = req.body;
   Usuario.findById(id, (err, usuario) => {
@@ -69,7 +69,7 @@ app.put('/:id', (req, res) => {
   });
 });
 
-app.post('/', mdAutenticacion.vericaToken , (req, res) => {
+app.post('/', (req, res) => {
   const body = req.body;
   const usuario = new Usuario({
     nombre: body.nombre,
