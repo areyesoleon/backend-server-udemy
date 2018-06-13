@@ -28,7 +28,7 @@ app.get('/', (req, res, next) => {
       });
 });
 
-app.put('/:id', mdAutenticacion.vericaToken,(req, res) => {
+app.put('/:id', [mdAutenticacion.vericaToken, mdAutenticacion.vericaADMIN_O_MISMOUSUARIO],(req, res) => {
   const id = req.params.id;
   const body = req.body;
   Usuario.findById(id, (err, usuario) => {
@@ -97,7 +97,7 @@ app.post('/', (req, res) => {
 
 });
 
-app.delete('/:id', mdAutenticacion.vericaToken, (req, res) => {
+app.delete('/:id',  [mdAutenticacion.vericaToken, mdAutenticacion.vericaADMIN_ROLE], (req, res) => {
   const id = req.params.id;
   Usuario.findByIdAndRemove(id, (err, usuarioBorrado) => {
     if (err) {
