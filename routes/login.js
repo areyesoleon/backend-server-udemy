@@ -78,6 +78,14 @@ const   GOOGLE_SECRET = new OAuth2Client(SECRET_GOOGLE);
 //======================
 //Autenticacion normal
 //======================
+const mdAtentication = require('../middlewares/autenticacion');
+app.get('/renuevatoken',mdAtentication.vericaToken,(req,res) => {
+  const token = jwt.sign({ usuario: req.usuario }, SEED, { expiresIn: 14400 });
+  return res.status(200).json({
+    ok: true,
+    token: token
+  });
+});
 
 app.post('/', (req, res) => {
   const body = req.body;
